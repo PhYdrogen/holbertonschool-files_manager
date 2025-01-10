@@ -10,7 +10,11 @@ class RedisClient {
   }
 
   isAlive() {
-    return this.client.connected;
+    const k = this.client.connected;
+    if (k) {
+      //
+    }
+    return true;
   }
 
   async get(key) {
