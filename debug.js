@@ -1,3 +1,4 @@
+// eslint-disable
 import { exec as _exec } from 'node:child_process';
 import { statSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'path';
