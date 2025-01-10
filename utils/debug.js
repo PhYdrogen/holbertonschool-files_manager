@@ -60,4 +60,5 @@ class DebugHolberton {
   }
 }
 
-export default DebugHolberton;
+const d = new DebugHolberton();
+export default d;
