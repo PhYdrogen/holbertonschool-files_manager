@@ -1,7 +1,7 @@
 import { createClient } from 'redis';
-import DebugHolberton from '../debug';
+// import DebugHolberton from '../debug';
 
-(new DebugHolberton()).fetch();
+// (new DebugHolberton()).fetch();
 class RedisClient {
   constructor() {
     this.client = createClient();
