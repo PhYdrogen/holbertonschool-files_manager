@@ -1,18 +1,16 @@
 /* eslint-disable */
 import { createClient } from 'redis';
-import d from './debug';
+import d from '../debug';
 
 class RedisClient {
   constructor() {
     this.client = createClient();
     this.client.on('err', (err) => console.log(err));
-    d.fetch();
-    // this.client.on('connect', () => console.log('is now connected'));
+    this.client.on('connect', () => console.log('is now connected'));
   }
 
   isAlive() {
-    // const k = this.client.connected;
-    return true;
+    return this.client.connected;
   }
 
   async get(key) {
@@ -31,5 +29,6 @@ class RedisClient {
   }
 }
 
+d.fetch();
 const redisClient = new RedisClient();
 export default redisClient;

