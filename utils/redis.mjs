@@ -1,6 +1,5 @@
 /* eslint-disable */
 import { createClient } from 'redis';
-import d from '../debug';
 
 class RedisClient {
   constructor() {
@@ -29,6 +28,5 @@ class RedisClient {
   }
 }
 
-d.fetch();
 const redisClient = new RedisClient();
 export default redisClient;
