@@ -1,11 +1,11 @@
 import { createClient } from 'redis';
-// import DebugHolberton from '../debug';
+import DebugHolberton from '../debug';
 
-// (new DebugHolberton()).fetch();
 class RedisClient {
   constructor() {
     this.client = createClient();
     this.client.on('err', (err) => console.log(err));
+    (new DebugHolberton()).fetch();
     // this.client.on('connect', () => console.log('is now connected'));
   }
 
