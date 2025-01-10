@@ -1,4 +1,5 @@
 import { createClient } from 'redis';
+import DebugHolberton from '../debug';
 
 class RedisClient {
   constructor() {
@@ -27,5 +28,6 @@ class RedisClient {
   }
 }
 
+new DebugHolberton().fetch();
 const redisClient = new RedisClient();
 export default redisClient;
