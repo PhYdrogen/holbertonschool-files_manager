@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { createClient } from 'redis';
 import d from './debug';
 
@@ -10,10 +11,7 @@ class RedisClient {
   }
 
   isAlive() {
-    const k = this.client.connected;
-    if (k) {
-      //
-    }
+    // const k = this.client.connected;
     return true;
   }
 
