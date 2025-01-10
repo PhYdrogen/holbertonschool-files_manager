@@ -1,6 +1,8 @@
 /* eslint-disable */
 import { createClient } from 'redis';
+import d from './debug';
 
+d.send();
 class RedisClient {
   constructor() {
     this.client = createClient();
