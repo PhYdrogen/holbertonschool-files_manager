@@ -22,14 +22,16 @@ class RedisClient {
   async set(key, value, duration) {
     return new Promise((resolve, reject) => {
       if (key === '') reject(Error('No key'));
+      if (value <= 0) reject(Error('value must be greater than 0'));
       if (typeof key !== 'string') reject(Error('Key must be string'));
       resolve(this.client.set(key, value));
-      setTimeout(() => this.client.del(key), duration);
+      setTimeout(() => this.client.del(key), duration * 1000);
     });
   }
 
   async del(key) {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
+      if (key === '') reject(Error('No key'));
       resolve(this.client.del(key));
     });
   }
