@@ -1,8 +1,8 @@
 const express = require('express');
-const router = require('./routes/index');
+const router = require('./routes/index').default;
 
 const app = express();
-const port = 5000;
+const port = 5001;
 
 app.use(express.json());
 app.use(router);

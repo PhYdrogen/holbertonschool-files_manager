@@ -115,14 +115,14 @@ class FilesController {
       if (!search || search.length < 1) { // Vérifie si le fichier n'existe pas
         return res.status(404).json({ error: 'Not found' });
       }
-      return (res.json({ // Retourne le fichier
+      return res.status(200).json({ // Retourne le fichier
         id: search[0]._id,
         userId: search[0].userId,
         name: search[0].name,
         type: search[0].type,
         isPublic: search[0].isPublic,
         parentId: search[0].parentId,
-      }));
+      });
     }
     return res.status(401).json({ error: 'Unauthorized' });
   }

@@ -1,5 +1,5 @@
-const dbClient = require('../utils/db');
-const redisClient = require('../utils/redis');
+import dbClient from '../utils/db.mjs';
+import redisClient from '../utils/redis.mjs';
 
 /**
  * Classe AppController
@@ -11,7 +11,7 @@ class AppController {
     // Vérifie si Redis et la base de données sont actifs
     if (redisClient.isAlive() && dbClient.isAlive()) {
       // Renvoye une réponse JSON avec l'état de Redis et de la base de données
-      res.status(200).json({ redis: true, db: true }, 200);
+      res.status(200).json({ redis: true, db: true });
     }
   }
 
