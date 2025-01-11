@@ -1,5 +1,5 @@
-import { ObjectId } from 'mongodb'; // import ObjectId from 'mongodb'
-import { v4 as uuidv4 } from 'uuid'; // import { v4 as uuidv4 } from 'uuid'
+const ObjectId = require('mongodb'); // import ObjectId from 'mongodb'
+const uuid = require('uuid');
 
 const fs = require('fs');
 const mime = require('mime-types'); // import mime from 'mime-types'
@@ -70,7 +70,7 @@ class FilesController {
 
       const buff = Buffer.from(data, 'base64').toString('utf-8'); // Convertit les données en base64
       const path = process.env.FOLDER_PATH || '/tmp/files_manager'; // Définit le chemin du dossier
-      const newFile = uuidv4(); // Génère un nom de fichier unique
+      const newFile = uuid.v4(); // Génère un nom de fichier unique
 
       if (!fs.existsSync(path)) { // Vérifie si le dossier existe
         fs.mkdirSync(path, { recursive: true }); // Crée le dossier

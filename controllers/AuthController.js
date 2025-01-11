@@ -1,26 +1,12 @@
 // Importer la fonction v4 de la bibliothèque uuid avec un alias uuidv4
-import { v4 as uuidv4 } from 'uuid';
+const uuid = require('uuid');
+const hashPasswd = require('../utils/hashpwd');
 
 // Import du module crypto pour le hachage
-const crypto = require('crypto');
-
 const redisClient = require('../utils/redis');
 const dbClient = require('../utils/db');
 
 // Fonction pour hacher le mot de passe
-function hashPasswd(password) {
-  // Créer un objet de hachage SHA-1
-  const hash = crypto.createHash('sha1');
-
-  // Mets à jour le hachage avec le mot de passe fourni
-  const data = hash.update(password, 'utf-8');
-
-  // Génére le hachage au format hexadécimal
-  const genHash = data.digest('hex');
-
-  // Retourne le hachage généré
-  return genHash;
-}
 
 class AuthController {
   // Méthode pour se connecter
@@ -58,7 +44,7 @@ class AuthController {
     }
 
     // Génére un jeton d'authentification unique
-    const key = uuidv4();
+    const key = uuid.v4();
     const token = `auth_${key}`;
 
     // Stocke le jeton dans Redis avec l'ID de l'utilisateur comme valeur associée

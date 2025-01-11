@@ -1,26 +1,9 @@
-import { ObjectId } from 'mongodb';
-
-const crypto = require('crypto');
+const ObjectId = require('mongodb');
+const hashPasswd = require('../utils/hashpwd');
 
 const dbClient = require('../utils/db');
 const redisClient = require('../utils/redis');
 
-// Fonction pour hacher le mot de passe
-function hashPasswd(password) {
-  // Créer un objet de hachage SHA-1
-  const hash = crypto.createHash('sha1');
-
-  // Mets à jour le hachage avec le mot de passe fourni
-  const data = hash.update(password, 'utf-8');
-
-  // Génère le hachage au format hexadécimal
-  const genHash = data.digest('hex');
-
-  // Retourne le hachage généré
-  return genHash;
-}
-
-// Définir la classe UsersController
 class UsersController {
   // Méthode pour créer un nouvel utilisateur
   static async postNew(req, res) {
