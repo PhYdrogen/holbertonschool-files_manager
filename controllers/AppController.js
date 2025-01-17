@@ -1,11 +1,7 @@
 import redisClient from '../utils/redis';
 import dbClient from '../utils/db';
 
-/**
- * Classe AppController
- * Contient des méthodes pour interagir avec l'état de l'API
- */
-class AppController {
+export default class AppController {
   static getStatus(req, res) {
     if (redisClient.isAlive() && dbClient.isAlive()) {
       res.status(200).json({ redis: true, db: true });
@@ -22,5 +18,3 @@ class AppController {
     res.status(200).json(obj);
   }
 }
-
-module.exports = AppController;

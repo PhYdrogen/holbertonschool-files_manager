@@ -3,7 +3,7 @@ import hashPasswd from '../utils/hashpwd';
 import redisClient from '../utils/redis';
 import dbClient from '../utils/db';
 
-class AuthController {
+export default class AuthController {
   static async getConnect(req, res) {
     const user = req.header('Authorization');
     if (!user || user.length === 0) {
@@ -52,5 +52,3 @@ class AuthController {
     return res.status(401).json({ error: 'Unauthorized' });
   }
 }
-
-module.exports = AuthController;
