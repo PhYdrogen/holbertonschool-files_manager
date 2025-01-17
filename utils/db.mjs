@@ -10,13 +10,13 @@ class DBClient {
     const uri = `mongodb://${this.host}:${this.port}`;
     this.client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
     this.db = null;
+    this.connect();
   }
 
   async connect() {
     try {
       await this.client.connect();
       this.db = this.client.db(this.database);
-      console.log('Connected to MongoDB');
       return true;
     } catch (err) {
       console.error('Failed to connect to MongoDB:', err);
@@ -24,21 +24,11 @@ class DBClient {
     }
   }
 
-  async isAlive() {
+  isAlive() {
     if (this.db === null) {
-      const connectionSuccess = await this.connect();
-      if (!connectionSuccess) {
-        return false;
-      }
-    }
-
-    try {
-      await this.db.command({ ping: 1 });
-      return true;
-    } catch (error) {
-      console.error('Error pinging MongoDB:', error);
       return false;
     }
+    return true;
   }
 
   async nbUsers() {
