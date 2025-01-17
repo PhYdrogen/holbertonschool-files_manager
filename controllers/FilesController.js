@@ -1,10 +1,9 @@
-const ObjectId = require('mongodb'); // import ObjectId from 'mongodb'
-const uuid = require('uuid');
-
-const fs = require('fs');
-const mime = require('mime-types'); // import mime from 'mime-types'
-const dbClient = require('../utils/db');
-const redisClient = require('../utils/redis');
+import ObjectId from 'mongodb';
+import uuid from 'uuid';
+import fs from 'fs';
+import mime from 'mime-types';
+import redisClient from '../utils/redis';
+import dbClient from '../utils/db';
 
 /**
  * Classe FilesController

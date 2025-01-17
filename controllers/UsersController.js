@@ -1,8 +1,7 @@
-const ObjectId = require('mongodb');
-const hashPasswd = require('../utils/hashpwd');
-
-const dbClient = require('../utils/db');
-const redisClient = require('../utils/redis');
+import ObjectId from 'mongodb';
+import hashPasswd from '../utils/hashpwd';
+import redisClient from '../utils/redis';
+import dbClient from '../utils/db';
 
 class UsersController {
   // Méthode pour créer un nouvel utilisateur
