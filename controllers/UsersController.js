@@ -1,9 +1,9 @@
-import ObjectId from 'mongodb';
+import { ObjectId } from 'mongodb';
 import hashPasswd from '../utils/hashpwd';
 import redisClient from '../utils/redis';
 import dbClient from '../utils/db';
 
-class UsersController {
+export default class UsersController {
   static async postNew(req, res) {
     const { email, password } = req.body;
 
@@ -14,8 +14,8 @@ class UsersController {
       return res.status(400).json({ error: 'Missing password' });
     }
 
-    const search = await dbClient.db.collection('users').find({ email }).toArray();
-    if (search.length > 0) {
+    const search = await dbClient.db.collection('users').findOne({ email });
+    if (!search) {
       return res.status(400).json({ error: 'Already exist' });
     }
 
@@ -27,18 +27,17 @@ class UsersController {
 
   static async getMe(req, res) {
     const key = req.header('X-Token');
-    const session = await redisClient.get(`auth_${key}`);
     if (!key || key.length === 0) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
-    if (session) {
-      const search = await dbClient.db.collection('users').find({ _id: ObjectId(session) }).toArray();
-      if (search.length > 0) {
-        return res.status(200).json({ id: search[0]._id, email: search[0].email });
-      }
+    const mongoUserId = await redisClient.get(`auth_${key}`);
+    if (!mongoUserId) {
+      return res.status(401).json({ error: 'Unauthorized' });
     }
-    return res.status(401).json({ error: 'Unauthorized' });
+    const search = await dbClient.db.collection('users').findOne({ _id: ObjectId(mongoUserId) });
+    if (!search) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+    return res.status(200).json({ id: search._id, email: search.email });
   }
 }
-
-module.exports = UsersController;
