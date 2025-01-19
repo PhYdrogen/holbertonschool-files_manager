@@ -143,7 +143,7 @@ export default class FilesController {
 
     const search = await dbClient.db.collection('files').aggregate([
       {
-        $match: { parentId },
+        $match: { parentId, userId: ObjectId(session) },
       },
       {
         $skip: page * 20,
