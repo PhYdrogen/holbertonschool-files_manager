@@ -228,67 +228,51 @@ export default class FilesController {
 
   static async getFile(req, res) {
     const { id } = req.params;
-    if (!id || id === '') {
+
+    // Validate and get the file
+    let file;
+    try {
+      file = await dbClient.db.collection('files').findOne({ _id: ObjectId(id) });
+    } catch (err) {
       return res.status(404).json({ error: 'Not found' });
     }
-    let search = [];
-    try {
-      search = await dbClient.db.collection('files').find({ _id: ObjectId(id) }).toArray();
-    } catch (e) {
-      return (res.status(404).json({ error: 'Not found' }));
+
+    if (!file) {
+      return res.status(404).json({ error: 'Not found' });
     }
-    if (!search || search.length < 1) {
-      return (res.status(404).json({ error: 'Not found' }));
+
+    // Check if it's a folder
+    if (file.type === 'folder') {
+      return res.status(400).json({ error: "A folder doesn't have content" });
     }
-    if (search[0].type === 'folder') {
-      return res.status(400).json({ error: 'A folder doesn\'t have content' });
-    }
-    if (search[0].isPublic === false) {
-      const key = req.header('X-Token');
-      const session = await redisClient.get(`auth_${key}`);
-      if (!key || key.length === 0) {
+
+    // Check file access permissions
+    if (!file.isPublic) {
+      const token = req.header('X-Token');
+      if (!token) {
         return res.status(404).json({ error: 'Not found' });
       }
-      if (session) {
-        let search1 = [];
-        try {
-          search1 = await dbClient.db.collection('files').find({ _id: ObjectId(id), userId: ObjectId(session) }).toArray();
-        } catch (e) {
-          return (res.status(404).json({ error: 'Not found' }));
-        }
-        if (!search1 || search1.length < 1) {
-          return (res.status(404).json({ error: 'Not found' }));
-        }
-        if (!fs.existsSync(search1[0].localPath)) {
-          return res.status(404).json({ error: 'Not found' });
-        }
 
-        const type = mime.contentType(search1[0].name);
-        const charset = type.split('=')[1];
-        try {
-          const data = fs.readFileSync(search1[0].localPath, charset);
-          return res.send(data);
-        } catch (e) {
-          return (res.status(404).json({ error: 'Not found' }));
-        }
+      const userId = await redisClient.get(`auth_${token}`);
+      if (!userId || file.userId.toString() !== userId) {
+        return res.status(404).json({ error: 'Not found' });
       }
+    }
+
+    // Check if file exists locally
+    if (!fs.existsSync(file.localPath)) {
       return res.status(404).json({ error: 'Not found' });
     }
 
-    const search2 = await dbClient.db.collection('files').find({ _id: ObjectId(id) }).toArray();
-    if (!search2 || search2.length < 1) {
-      return (res.status(404).json({ error: 'Not found' }));
-    }
-    if (!fs.existsSync(search2[0].localPath)) {
-      return res.status(404).json({ error: 'Not found' });
-    }
-    const type = mime.contentType(search2[0].name);
-    const charset = type.split('=')[1];
+    // Get MIME type and serve file
+    const mimeType = mime.contentType(file.name);
+
     try {
-      const data = fs.readFileSync(search2[0].localPath, charset);
+      const data = fs.readFileSync(file.localPath);
+      res.setHeader('Content-Type', mimeType);
       return res.send(data);
-    } catch (e) {
-      return (res.status(404).json({ error: 'Not found' }));
+    } catch (error) {
+      return res.status(404).json({ error: 'Not found' });
     }
   }
 }
