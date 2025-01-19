@@ -124,38 +124,46 @@ export default class FilesController {
 
   static async getIndex(req, res) {
     const key = req.header('X-Token');
-    const session = await redisClient.get(`auth_${key}`);
     if (!key || key.length === 0) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
-    if (session) {
-      let { page, parentId } = req.query;
-      console.log(page, parentId);
-      if (!parentId) {
-        parentId = 0;
-      } else {
-        parentId = ObjectId(parentId);
-      }
-      page = parseInt(page, 10) || 1;
-      console.log(page, parentId);
 
-      const search = await dbClient.db.collection('files').aggregate([
-        {
-          $match: { parentId },
-        },
-        {
-          $skip: (1 - page) * 20,
-        },
-        {
-          $limit: 20,
-        },
-      ]).toArray();
-      if (search) {
-        return res.status(200)
-          .send(search);
+    const session = await redisClient.get(`auth_${key}`);
+    if (!session) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    let { page, parentId } = req.query;
+    console.log(page, parentId);
+    if (!parentId) {
+      parentId = 0;
+    } else {
+      try {
+        parentId = ObjectId(parentId);
+      } catch (err) {
+        console.error(err);
+        parentId = 0;
       }
     }
-    return res.status(401).json({ error: 'Unauthorized' });
+    page = parseInt(page, 10) || 1;
+    console.log(page, parentId);
+
+    const search = await dbClient.db.collection('files').aggregate([
+      {
+        $match: { parentId },
+      },
+      {
+        $skip: (1 - page) * 20,
+      },
+      {
+        $limit: 20,
+      },
+    ]).toArray();
+
+    if (search) {
+      return res.status(200).send(search);
+    }
+    return res.status(200).send([]);
   }
 
   static async putPublish(req, res) {
