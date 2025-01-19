@@ -1,5 +1,5 @@
-import ObjectId from 'mongodb';
-import uuid from 'uuid';
+import { ObjectId } from 'mongodb';
+import { v4 } from 'uuid';
 import fs from 'fs';
 import mime from 'mime-types';
 import redisClient from '../utils/redis';
@@ -60,7 +60,7 @@ export default class FilesController {
 
       const buff = Buffer.from(data, 'base64').toString('utf-8');
       const path = process.env.FOLDER_PATH || '/tmp/files_manager';
-      const newFile = uuid.v4();
+      const newFile = v4();
 
       if (!fs.existsSync(path)) {
         fs.mkdirSync(path, { recursive: true });
