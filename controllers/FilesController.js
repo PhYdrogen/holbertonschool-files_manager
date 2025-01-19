@@ -101,7 +101,12 @@ export default class FilesController {
     }
     if (session) {
       const { id } = req.params;
-      const search = await dbClient.db.collection('files').find({ _id: ObjectId(id) }).toArray();
+      let search;
+      try {
+        search = await dbClient.db.collection('files').find({ _id: ObjectId(id) }).toArray();
+      } catch (err) {
+        return res.status(404).json({ error: 'Not found' });
+      }
       if (!search || search.length < 1) {
         return res.status(404).json({ error: 'Not found' });
       }
