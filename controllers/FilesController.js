@@ -103,21 +103,14 @@ export default class FilesController {
       const { id } = req.params;
       let search;
       try {
-        search = await dbClient.db.collection('files').find({ _id: ObjectId(id) }).toArray();
+        search = await dbClient.db.collection('files').find({ _id: ObjectId(id), userId: ObjectId(session) }).toArray();
       } catch (err) {
         return res.status(404).json({ error: 'Not found' });
       }
       if (!search || search.length < 1) {
         return res.status(404).json({ error: 'Not found' });
       }
-      return res.status(200).json({
-        id: search[0]._id,
-        userId: search[0].userId,
-        name: search[0].name,
-        type: search[0].type,
-        isPublic: search[0].isPublic,
-        parentId: search[0].parentId,
-      });
+      return res.status(200).json(search[0]);
     }
     return res.status(401).json({ error: 'Unauthorized' });
   }
