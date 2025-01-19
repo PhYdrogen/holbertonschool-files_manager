@@ -133,27 +133,20 @@ export default class FilesController {
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
-    let { page, parentId } = req.query;
-    console.log(page, parentId);
-    if (!parentId) {
-      parentId = 0;
-    } else {
-      try {
-        parentId = ObjectId(parentId);
-      } catch (err) {
-        console.error(err);
-        parentId = 0;
-      }
+    let { page = 0, parentId = '0' } = req.query;
+    page = parseInt(page, 10);
+    try {
+      parentId = ObjectId(parentId);
+    } catch (err) {
+      return res.status(200).json([]);
     }
-    page = parseInt(page, 10) || 1;
-    console.log(page, parentId);
 
     const search = await dbClient.db.collection('files').aggregate([
       {
         $match: { parentId },
       },
       {
-        $skip: (1 - page) * 20,
+        $skip: page * 20,
       },
       {
         $limit: 20,
